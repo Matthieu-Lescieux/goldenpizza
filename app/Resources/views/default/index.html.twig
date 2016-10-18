@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div>
+        {% for pizza in pizzas %}
+            <p>
+                <span style="font-size: 2em; font-weight: bold">{{ pizza.name }}</span>
+                <span style="font-style: italic">{{ pizza.price }} €</span>
+                <a href="{{ path('', {'id': pizza.id}) }}">Commander</a>
+            </p>
+        {% endfor %}
+    </div>
+{% endblock %}
