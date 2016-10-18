@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div>
+        {% for order in orders %}
+            <p>
+                <span style="font-size: 2em; font-weight: bold">{{ order.pizza.name }}</span>
+                <span style="font-style: italic">{{ order.pizza.price }} €</span>
+                <span>{{ order.status }}</span>
+            </p>
+        {% endfor %}
+    </div>
+{% endblock %}

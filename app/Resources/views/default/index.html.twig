@@ -4,9 +4,10 @@
     <div>
         {% for pizza in pizzas %}
             <p>
+                <span>{{ pizza.id }}</span>
                 <span style="font-size: 2em; font-weight: bold">{{ pizza.name }}</span>
                 <span style="font-style: italic">{{ pizza.price }} €</span>
-                <a href="{{ path('', {'id': pizza.id}) }}">Commander</a>
+                <a href="{{ path('order', {'pizzaId': pizza.id}) }}">Commander</a>
             </p>
         {% endfor %}
     </div>
