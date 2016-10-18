@@ -64,3 +64,9 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+circle_rest_client:
+    curl:
+        defaults:
+            CURLOPT_HTTPHEADER: [ 'Content-Type: application/json', 'Authorization: goldenpizza' ]
+            CURLOPT_TIMEOUT: 2
