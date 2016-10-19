@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new AppBundle\AppBundle(),
             new Circle\RestClientBundle\CircleRestClientBundle(),
             new CacheBundle\CacheBundle(),
+            new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {
