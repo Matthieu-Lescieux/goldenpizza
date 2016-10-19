@@ -67,12 +67,16 @@ class DefaultController extends Controller
         }
 
         $pizzas = [];
-        $lastResponse = $em->getRepository('CacheBundle:Response')->findOneBy(['type' => '/pizzas']);
-        if (null !== $lastResponse) {
-            $pizzasJson = $lastResponse->getContent();
-            $pizzas = json_decode(trim($pizzasJson), true);
-            dump("Loaded from cache");
-        } else {
+        try {
+            $lastResponse = $em->getRepository('CacheBundle:Response')->findOneBy(['type' => '/pizzas']);
+            if (null !== $lastResponse) {
+                $pizzasJson = $lastResponse->getContent();
+                $pizzas = json_decode(trim($pizzasJson), true);
+                dump("Loaded from cache");
+            } else {
+                dump("Can't load history from cache");
+            }
+        } catch (\Exception $esception) {
             dump("Can't load history from cache");
         }
 
