@@ -171,7 +171,7 @@ class DefaultController extends Controller
         } catch (\Exception $esception) {
             dump("Can't load history from cache");
         }
-        
+
         return $this->render('default/admin.html.twig', ['orders' => $orders, 'form' => $form->createView()]);
     }
 }
