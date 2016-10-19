@@ -54,8 +54,8 @@ doctrine:
                 host:     "%database_host2%"
                 port:     "%database_port2%"
                 dbname:   "%database_name2%"
-                user:     "%database_user%"
-                password: "%database_password%"
+                user:     "%database_user2%"
+                password: "%database_password2%"
                 charset:  UTF8
     orm:
         default_entity_manager: default
