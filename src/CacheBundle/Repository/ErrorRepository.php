@@ -10,9 +10,9 @@ namespace CacheBundle\Repository;
  */
 class ErrorRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getLastMinuteForType($type) {
+    public function findLastMinuteForType($type) {
         $now = new \DateTime();
-        $before = $now->sub(new \DateInterval('T00:01:00'));
+        $before = $now->sub(new \DateInterval('PT1M'));
 
         $qb = $this->createQueryBuilder('e')
             ->andWhere('e.createdat > :before')
