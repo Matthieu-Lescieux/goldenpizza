@@ -17,3 +17,9 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    database_host2:    127.0.0.1
+    database_port2:    ~
+    database_name2:    symfony2
+    database_user:     root
+    database_password: ~
