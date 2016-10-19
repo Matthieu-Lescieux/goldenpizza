@@ -11,6 +11,7 @@
     $container->setParameter('database_name2', ltrim($db2["path"], '/'));
     $container->setParameter('database_user2', $db2['user']);
     $container->setParameter('database_password2', $db2['pass']);
+    $container->setParameter('database_port2', $db2['port']);
     $container->setParameter('secret', getenv('SECRET'));
     $container->setParameter('locale', 'en');
     $container->setParameter('mailer_transport', null);

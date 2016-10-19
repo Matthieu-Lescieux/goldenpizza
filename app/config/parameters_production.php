@@ -8,7 +8,7 @@
     $container->setParameter('database_user', $db['user']);
     $container->setParameter('database_password', $db['pass']);
     $container->setParameter('database_host2', $db2['host']);
-    $container->setParameter('database_name2', ltrim($db2["path"], '/'));
+    $container->setParameter('database_name2', substr($db2["path"], 1));
     $container->setParameter('database_user2', $db2['user']);
     $container->setParameter('database_password2', $db2['pass']);
     $container->setParameter('database_port2', $db2['port']);
