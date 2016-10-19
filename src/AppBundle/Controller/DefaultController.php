@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Message;
+use AppBundle\Form\MessageType;
 use Circle\RestClientBundle\Exceptions\OperationTimedOutException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -55,13 +57,16 @@ class DefaultController extends Controller
     public function adminAction(Request $request)
     {
         $restClient = $this->container->get('circle.restclient');
+        $message = new Message();
+        $form = $this->createForm(new MessageType(), $message);
 
         try {
             $response = $restClient->get('http://pizzapi.herokuapp.com/orders');
             $orders = json_decode($response->getContent(), true);
-            return $this->render('default/admin.html.twig', ['orders' => $orders]);
+
+            return $this->render('default/admin.html.twig', ['orders' => $orders, 'form' => $form->createView()]);
         } catch (OperationTimedOutException $exception) {
-            return new Response("API indisponible");
+            return $this->render('default/admin.html.twig', ['orders' => [], 'form' => $form->createView()]);
         }
     }
 }
