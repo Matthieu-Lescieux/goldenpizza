@@ -48,14 +48,6 @@ doctrine:
                 user:     "%database_user%"
                 password: "%database_password%"
                 charset:  UTF8
-            cache:
-                driver:   pdo_mysql
-                host:     "%database_host2%"
-                port:     "%database_port2%"
-                dbname:   "%database_name2%"
-                user:     "%database_user%"
-                password: "%database_password%"
-                charset:  UTF8
     orm:
         default_entity_manager: default
         entity_managers:
