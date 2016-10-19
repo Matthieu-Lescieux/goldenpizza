@@ -2,6 +2,7 @@ imports:
 #    - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
+    - { resource: "@CacheBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -48,6 +49,14 @@ doctrine:
                 user:     "%database_user%"
                 password: "%database_password%"
                 charset:  UTF8
+            cache:
+                driver:   pdo_mysql
+                host:     "%database_host2%"
+                port:     "%database_port2%"
+                dbname:   "%database_name2%"
+                user:     "%database_user%"
+                password: "%database_password%"
+                charset:  UTF8
     orm:
         default_entity_manager: default
         entity_managers:
@@ -59,7 +68,6 @@ doctrine:
                 connection: cache
                 mappings:
                     CacheBundle: ~
-
 # Swiftmailer Configuration
 swiftmailer:
     transport: "%mailer_transport%"
