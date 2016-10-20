@@ -64,4 +64,9 @@ class DefaultController extends Controller
 
         return new JsonResponse($orders);
     }
+
+    public function postOrderAction()
+    {
+
+    }
 }

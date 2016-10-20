@@ -84,23 +84,50 @@ class DefaultController extends Controller
     }
 
     /**
-     * @param Request $request
      * @param $pizzaId
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
      * @Route("/order/{pizzaId}", requirements={"pizzaId" = "\d+"}, name="order")
      */
-    public function orderAction(Request $request, $pizzaId)
+    public function orderAction($pizzaId)
     {
-        $data = ['id' => $pizzaId];
+        $em = $this->getDoctrine()->getManager('cache');
         $restClient = $this->container->get('circle.restclient');
+        $lastErrors = [];
 
         try {
-            $restClient->post('http://pizzapi.herokuapp.com/orders', json_encode($data, JSON_NUMERIC_CHECK));
-            return $this->redirectToRoute('homepage');
-        } catch (OperationTimedOutException $exception) {
-            return new Response("API indisponible");
+            $lastErrors = $this->getDoctrine()->getManager('cache')->getRepository('CacheBundle:Error')->findLastMinuteForType('/order/{pizzaId}');
+        } catch (\Exception $exception) {
+            dump("Can't load last errors from cache");
         }
+
+        $data = ['id' => $pizzaId];
+
+        if (count($lastErrors) <= 1) {
+            try {
+                $response = $restClient->post('http://pizzapi.herokuapp.com/orders', json_encode($data, JSON_NUMERIC_CHECK));
+
+                if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 500) {
+                    // Nothing to do, we don't save post result
+                } else {
+                    throw new HttpException($response->getStatusCode());
+                }
+
+                return $this->redirectToRoute('homepage');
+            } catch (OperationTimedOutException $exception) {
+                try {
+                    $error = new Error();
+                    $error->setCreatedat(new \DateTime());
+                    $error->setType('/pizzas');
+                    $em->persist($error);
+                    $em->flush();
+                } catch(\Exception $exception) {
+                    // Can't access error table
+                }
+            }
+        }
+
+        return new Response("Order service unavailable");
     }
 
     /**
