@@ -26,7 +26,7 @@ class DefaultController extends Controller
         try {
             $lastErrors = $this->getDoctrine()->getManager('cache')->getRepository('CacheBundle:Error')->findLastMinuteForType('/pizzas');
         } catch (\Exception $exception) {
-            dump("Can't load last errors from cache");
+          //  dump("Can't load last errors from cache");
         }
 
         if (count($lastErrors) <= 1) {
@@ -50,7 +50,7 @@ class DefaultController extends Controller
 
                 $pizzas = json_decode($response->getContent(), true);
 
-                dump("Loaded from API");
+               // dump("Loaded from API");
                 return $this->render('default/index.html.twig', ['pizzas' => $pizzas]);
             } catch (\Exception $exception) {
                 try {
@@ -71,12 +71,12 @@ class DefaultController extends Controller
             if (null !== $lastResponse) {
                 $pizzasJson = $lastResponse->getContent();
                 $pizzas = json_decode(trim($pizzasJson), true);
-                dump("Loaded from cache");
+               // dump("Loaded from cache");
             } else {
                 dump("Can't load history from cache");
             }
         } catch (\Exception $esception) {
-            dump("Can't load history from cache");
+            //dump("Can't load history from cache");
         }
 
         return $this->render('default/index.html.twig', ['pizzas' => $pizzas]);
@@ -143,7 +143,7 @@ class DefaultController extends Controller
 
                 $orders = json_decode($response->getContent(), true);
 
-                dump("Loaded from API");
+                //dump("Loaded from API");
                 return $this->render('default/admin.html.twig', ['orders' => $orders, 'form' => $form->createView()]);
             } catch (\Exception $exception) {
                 try {
@@ -164,12 +164,12 @@ class DefaultController extends Controller
             if (null !== $lastResponse) {
                 $ordersJson = $lastResponse->getContent();
                 $orders = json_decode(trim($ordersJson), true);
-                dump("Loaded from cache");
+              //  dump("Loaded from cache");
             } else {
-                dump("Can't load history from cache");
+               // dump("Can't load history from cache");
             }
         } catch (\Exception $esception) {
-            dump("Can't load history from cache");
+           // dump("Can't load history from cache");
         }
 
         return $this->render('default/admin.html.twig', ['orders' => $orders, 'form' => $form->createView()]);
