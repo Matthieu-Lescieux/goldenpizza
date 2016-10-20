@@ -31,7 +31,8 @@ class DefaultController extends Controller
 
         if (count($lastErrors) <= 1) {
             try {
-                $response = $restClient->get('http://pizzapi.herokuapp.com/pizzas');
+                $host = $this->container->getParameter('apimock_hostname');
+                $response = $restClient->get($host.'/pizzas');
 
                 if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 500) {
                     $persistedResponse = $em->getRepository('CacheBundle:Response')->findOneBy(['type' => '/pizzas']);
@@ -124,7 +125,8 @@ class DefaultController extends Controller
 
         if (count($lastErrors) <= 1) {
             try {
-                $response = $restClient->get('http://pizzapi.herokuapp.com/orders');
+                $host = $this->container->getParameter('apimock_hostname');
+                $response = $restClient->get($host.'/orders');
 
                 if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 500) {
                     $persistedResponse = $em->getRepository('CacheBundle:Response')->findOneBy(['type' => '/orders']);

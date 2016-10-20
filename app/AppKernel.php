@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new AppBundle\AppBundle(),
             new Circle\RestClientBundle\CircleRestClientBundle(),
             new CacheBundle\CacheBundle(),
+            new ApimockBundle\ApimockBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {
