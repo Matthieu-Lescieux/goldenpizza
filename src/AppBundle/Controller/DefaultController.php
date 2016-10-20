@@ -26,12 +26,15 @@ class DefaultController extends Controller
         try {
             $lastErrors = $this->getDoctrine()->getManager('cache')->getRepository('CacheBundle:Error')->findLastMinuteForType('/pizzas');
         } catch (\Exception $exception) {
-          //  dump("Can't load last errors from cache");
+
+            // dump("Can't load last errors from cache");
+
         }
 
         if (count($lastErrors) <= 1) {
             try {
-                $response = $restClient->get('http://pizzapi.herokuapp.com/pizzas');
+                $host = $this->container->getParameter('apimock_hostname');
+                $response = $restClient->get($host.'/pizzas');
 
                 if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 500) {
                     $persistedResponse = $em->getRepository('CacheBundle:Response')->findOneBy(['type' => '/pizzas']);
@@ -50,7 +53,8 @@ class DefaultController extends Controller
 
                 $pizzas = json_decode($response->getContent(), true);
 
-               // dump("Loaded from API");
+                // dump("Loaded from API");
+
                 return $this->render('default/index.html.twig', ['pizzas' => $pizzas]);
             } catch (\Exception $exception) {
                 try {
@@ -71,35 +75,66 @@ class DefaultController extends Controller
             if (null !== $lastResponse) {
                 $pizzasJson = $lastResponse->getContent();
                 $pizzas = json_decode(trim($pizzasJson), true);
-               // dump("Loaded from cache");
+
+                // dump("Loaded from cache");
+
             } else {
-                dump("Can't load history from cache");
+                // dump("Can't load history from cache");
             }
         } catch (\Exception $esception) {
-            //dump("Can't load history from cache");
+
+            // dump("Can't load history from cache");
+
         }
 
         return $this->render('default/index.html.twig', ['pizzas' => $pizzas]);
     }
 
     /**
-     * @param Request $request
      * @param $pizzaId
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
      * @Route("/order/{pizzaId}", requirements={"pizzaId" = "\d+"}, name="order")
      */
-    public function orderAction(Request $request, $pizzaId)
+    public function orderAction($pizzaId)
     {
-        $data = ['id' => $pizzaId];
+        $em = $this->getDoctrine()->getManager('cache');
         $restClient = $this->container->get('circle.restclient');
+        $lastErrors = [];
 
         try {
-            $restClient->post('http://pizzapi.herokuapp.com/orders', json_encode($data, JSON_NUMERIC_CHECK));
-            return $this->redirectToRoute('homepage');
-        } catch (OperationTimedOutException $exception) {
-            return new Response("API indisponible");
+            $lastErrors = $this->getDoctrine()->getManager('cache')->getRepository('CacheBundle:Error')->findLastMinuteForType('/order/{pizzaId}');
+        } catch (\Exception $exception) {
+            // dump("Can't load last errors from cache");
         }
+
+        $data = ['id' => $pizzaId];
+
+        if (count($lastErrors) <= 1) {
+            try {
+                $response = $restClient->post('http://pizzapi.herokuapp.com/orders', json_encode($data, JSON_NUMERIC_CHECK));
+
+                if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 500) {
+                    // Nothing to do, we don't save post result
+                } else {
+                    throw new HttpException($response->getStatusCode());
+                }
+
+                return $this->redirectToRoute('homepage');
+            } catch (OperationTimedOutException $exception) {
+                try {
+                    $error = new Error();
+                    $error->setCreatedat(new \DateTime());
+                    $error->setType('/pizzas');
+                    $em->persist($error);
+                    $em->flush();
+                } catch(\Exception $exception) {
+                    // Can't access error table
+                }
+            }
+        }
+
+        return new Response("Order service unavailable");
     }
 
     /**
@@ -116,7 +151,9 @@ class DefaultController extends Controller
         try {
             $lastErrors = $this->getDoctrine()->getManager('cache')->getRepository('CacheBundle:Error')->findLastMinuteForType('/orders');
         } catch (\Exception $exception) {
-         //   dump("Can't load last errors from cache");
+
+            // dump("Can't load last errors from cache");
+
         }
 
         $message = new Message();
@@ -124,7 +161,8 @@ class DefaultController extends Controller
 
         if (count($lastErrors) <= 1) {
             try {
-                $response = $restClient->get('http://pizzapi.herokuapp.com/orders');
+                $host = $this->container->getParameter('apimock_hostname');
+                $response = $restClient->get($host.'/orders');
 
                 if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 500) {
                     $persistedResponse = $em->getRepository('CacheBundle:Response')->findOneBy(['type' => '/orders']);
@@ -143,7 +181,8 @@ class DefaultController extends Controller
 
                 $orders = json_decode($response->getContent(), true);
 
-                //dump("Loaded from API");
+                // dump("Loaded from API");
+
                 return $this->render('default/admin.html.twig', ['orders' => $orders, 'form' => $form->createView()]);
             } catch (\Exception $exception) {
                 try {
@@ -164,12 +203,14 @@ class DefaultController extends Controller
             if (null !== $lastResponse) {
                 $ordersJson = $lastResponse->getContent();
                 $orders = json_decode(trim($ordersJson), true);
-              //  dump("Loaded from cache");
+
+                // dump("Loaded from cache");
             } else {
-               // dump("Can't load history from cache");
+                // dump("Can't load history from cache");
             }
         } catch (\Exception $esception) {
-           // dump("Can't load history from cache");
+            // dump("Can't load history from cache");
+
         }
 
         return $this->render('default/admin.html.twig', ['orders' => $orders, 'form' => $form->createView()]);
