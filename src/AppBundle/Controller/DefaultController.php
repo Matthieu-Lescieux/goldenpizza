@@ -116,7 +116,7 @@ class DefaultController extends Controller
         try {
             $lastErrors = $this->getDoctrine()->getManager('cache')->getRepository('CacheBundle:Error')->findLastMinuteForType('/orders');
         } catch (\Exception $exception) {
-            dump("Can't load last errors from cache");
+         //   dump("Can't load last errors from cache");
         }
 
         $message = new Message();
